@@ -83,6 +83,15 @@ char *get_remote_username(Conf *conf)
     }
 }
 
+char *get_remote_password(Conf *conf)
+{
+	char *password = conf_get_str(conf,CONF_password);
+	if(*password){
+		return dupstr(password);
+	}
+	return NULL;
+}
+
 static char *gpps_raw(void *handle, const char *name, const char *def)
 {
     char *ret = read_setting_s(handle, name);
@@ -468,6 +477,7 @@ void save_open_settings(void *sesskey, Conf *conf)
     write_setting_s(sesskey, "ProxyTelnetCommand", conf_get_str(conf, CONF_proxy_telnet_command));
     wmap(sesskey, "Environment", conf, CONF_environmt);
     write_setting_s(sesskey, "UserName", conf_get_str(conf, CONF_username));
+	write_setting_s(sesskey, "PassWord", conf_get_str(conf, CONF_password));
     write_setting_i(sesskey, "UserNameFromEnvironment", conf_get_int(conf, CONF_username_from_env));
     write_setting_s(sesskey, "LocalUserName", conf_get_str(conf, CONF_localusername));
     write_setting_i(sesskey, "NoPTY", conf_get_int(conf, CONF_nopty));
@@ -737,6 +747,7 @@ void load_open_settings(void *sesskey, Conf *conf)
 	 conf, CONF_proxy_telnet_command);
     gppmap(sesskey, "Environment", conf, CONF_environmt);
     gpps(sesskey, "UserName", "", conf, CONF_username);
+	gpps(sesskey, "PassWord", "", conf, CONF_password);
     gppi(sesskey, "UserNameFromEnvironment", 0, conf, CONF_username_from_env);
     gpps(sesskey, "LocalUserName", "", conf, CONF_localusername);
     gppi(sesskey, "NoPTY", 0, conf, CONF_nopty);
