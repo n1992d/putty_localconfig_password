@@ -307,6 +307,10 @@ SOURCE=..\..\..\windows\window.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\windows\winpzmodem.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\windows\wingss.c
 # End Source File
 # Begin Source File

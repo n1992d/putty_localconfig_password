@@ -214,6 +214,10 @@ SOURCE=..\..\..\windows\window.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\windows\winpzmodem.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\windows\winhandl.c
 # End Source File
 # Begin Source File
