@@ -69,6 +69,8 @@ char *EMPTY_WINDOW_TITLE = "";
 
 const char sco2ansicolour[] = { 0, 4, 2, 6, 1, 5, 3, 7 };
 
+int xyz_ReceiveData(Terminal *term, const u_char *buffer, int len);
+
 #define sel_nl_sz  (sizeof(sel_nl)/sizeof(wchar_t))
 const wchar_t sel_nl[] = SEL_NL;
 
@@ -1581,6 +1583,8 @@ Terminal *term_init(Conf *myconf, struct unicode_data *ucsdata,
     term->basic_erase_char.cc_next = 0;
     term->erase_char = term->basic_erase_char;
 
+	term->xyz_transfering = 0;
+    term->xyz_Internals = NULL;
     return term;
 }
 
@@ -6129,40 +6133,47 @@ int term_ldisc(Terminal *term, int option)
 
 int term_data(Terminal *term, int is_stderr, const char *data, int len)
 {
-    bufchain_add(&term->inbuf, data, len);
-
-    if (!term->in_term_out) {
-	term->in_term_out = TRUE;
-	term_reset_cblink(term);
-	/*
-	 * During drag-selects, we do not process terminal input,
-	 * because the user will want the screen to hold still to
-	 * be selected.
-	 */
-	if (term->selstate != DRAGGING)
-	    term_out(term);
-	term->in_term_out = FALSE;
+	if (term->xyz_transfering && !is_stderr)
+    {
+	return xyz_ReceiveData(term, data, len);
     }
+    else
+	{
+		bufchain_add(&term->inbuf, data, len);
 
-    /*
-     * term_out() always completely empties inbuf. Therefore,
-     * there's no reason at all to return anything other than zero
-     * from this function, because there _can't_ be a question of
-     * the remote side needing to wait until term_out() has cleared
-     * a backlog.
-     *
-     * This is a slightly suboptimal way to deal with SSH-2 - in
-     * principle, the window mechanism would allow us to continue
-     * to accept data on forwarded ports and X connections even
-     * while the terminal processing was going slowly - but we
-     * can't do the 100% right thing without moving the terminal
-     * processing into a separate thread, and that might hurt
-     * portability. So we manage stdout buffering the old SSH-1 way:
-     * if the terminal processing goes slowly, the whole SSH
-     * connection stops accepting data until it's ready.
-     *
-     * In practice, I can't imagine this causing serious trouble.
-     */
+		if (!term->in_term_out) {
+		term->in_term_out = TRUE;
+		term_reset_cblink(term);
+		/*
+		 * During drag-selects, we do not process terminal input,
+		 * because the user will want the screen to hold still to
+		 * be selected.
+		 */
+		if (term->selstate != DRAGGING)
+			term_out(term);
+		term->in_term_out = FALSE;
+		}
+
+		/*
+		 * term_out() always completely empties inbuf. Therefore,
+		 * there's no reason at all to return anything other than zero
+		 * from this function, because there _can't_ be a question of
+		 * the remote side needing to wait until term_out() has cleared
+		 * a backlog.
+		 *
+		 * This is a slightly suboptimal way to deal with SSH-2 - in
+		 * principle, the window mechanism would allow us to continue
+		 * to accept data on forwarded ports and X connections even
+		 * while the terminal processing was going slowly - but we
+		 * can't do the 100% right thing without moving the terminal
+		 * processing into a separate thread, and that might hurt
+		 * portability. So we manage stdout buffering the old SSH-1 way:
+		 * if the terminal processing goes slowly, the whole SSH
+		 * connection stops accepting data until it's ready.
+		 *
+		 * In practice, I can't imagine this causing serious trouble.
+		 */
+	}
     return 0;
 }
 

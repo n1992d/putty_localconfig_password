@@ -891,6 +891,8 @@ int WINAPI WinMain(HINSTANCE inst, HINSTANCE prev, LPSTR cmdline, int show)
 		DispatchMessage(&msg);
 	    /* Send the paste buffer if there's anything to send */
 	    term_paste(term);
+		if (xyz_Process(back, backhandle, term))
+		    continue;
 	    /* If there's nothing new in the queue then we can do everything
 	     * we've delayed, reading the socket, writing, and repainting
 	     * the window.
@@ -5838,5 +5840,4 @@ void xyz_updateMenuItems(Terminal *term)
 	EnableMenuItem(m, IDM_XYZSTART, term->xyz_transfering?MF_GRAYED:MF_ENABLED);
 	EnableMenuItem(m, IDM_XYZUPLOAD, term->xyz_transfering?MF_GRAYED:MF_ENABLED);
 	EnableMenuItem(m, IDM_XYZABORT, !term->xyz_transfering?MF_GRAYED:MF_ENABLED);
-
 }
