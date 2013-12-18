@@ -23,6 +23,7 @@ _UpgradeReport_Files
 UpgradeLog*.XML
 UpgradeLog*.htm
 *.vcxproj*
+*.opensdf
 *.sln
 *.v11.suo
 *.sdf
