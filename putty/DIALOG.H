@@ -404,6 +404,17 @@ union control {
 	STANDARD_PREFIX;
 	char shortcut;
     } fontselect;
+	 struct {
+	STANDARD_PREFIX;
+	char shortcut;
+	/*
+	 * On at least some platforms, the file selector is a
+	 * separate dialog box, and contains a user-settable title.
+	 * 
+	 * This value _is_ expected to require freeing.
+	 */
+	char *title;
+    } directoryselect;
 };
 
 #undef STANDARD_PREFIX

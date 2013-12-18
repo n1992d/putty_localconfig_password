@@ -1630,7 +1630,7 @@ void winctrl_layout(struct dlgparam *dp, struct winctrls *wc,
 				      ctrl->fileselect.shortcut);
 	    shortcuts[nshortcuts++] = ctrl->fileselect.shortcut;
 	    editbutton(&pos, escaped, base_id, base_id+1,
-		       "Bro&wse...", base_id+2);
+		       "Browse...", base_id+2);
 	    shortcuts[nshortcuts++] = 'w';
 	    sfree(escaped);
 	    break;
@@ -2307,6 +2307,7 @@ Filename *dlg_filesel_get(union control *ctrl, void *dlg)
     sfree(tmp);
     return ret;
 }
+
 
 void dlg_fontsel_set(union control *ctrl, void *dlg, FontSpec *fs)
 {

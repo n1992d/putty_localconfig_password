@@ -646,6 +646,12 @@ void save_open_settings(void *sesskey, Conf *conf)
     write_setting_i(sesskey, "SerialParity", conf_get_int(conf, CONF_serparity));
     write_setting_i(sesskey, "SerialFlowControl", conf_get_int(conf, CONF_serflow));
     write_setting_s(sesskey, "WindowClass", conf_get_str(conf, CONF_winclass));
+	/* z-modem settings */
+	write_setting_s(sesskey, "rzCommand", conf_get_str(conf, CONF_rzcommand));
+    write_setting_s(sesskey, "rzOptions", conf_get_str(conf, CONF_rzoptions));
+    write_setting_s(sesskey, "szCommand", conf_get_str(conf, CONF_szcommand));
+    write_setting_s(sesskey, "szOptions", conf_get_str(conf, CONF_szoptions));
+    write_setting_s(sesskey, "zDownloadDir", conf_get_str(conf, CONF_zdownloaddir));
 }
 
 void load_settings(char *section, Conf *conf)
@@ -989,6 +995,13 @@ void load_open_settings(void *sesskey, Conf *conf)
     gppi(sesskey, "SerialParity", SER_PAR_NONE, conf, CONF_serparity);
     gppi(sesskey, "SerialFlowControl", SER_FLOW_XONXOFF, conf, CONF_serflow);
     gpps(sesskey, "WindowClass", "", conf, CONF_winclass);
+	
+	/* z-modem settings */
+    gpps(sesskey, "rzCommand","rz.exe" ,conf,CONF_rzcommand);
+    gpps(sesskey, "rzOptions", "-e -v", conf, CONF_rzoptions);
+    gpps(sesskey, "szCommand","sz.exe" ,conf, CONF_szcommand);
+    gpps(sesskey, "szOptions", "-e -v", conf, CONF_szoptions);
+    gpps(sesskey, "zDownloadDir","C:\\",conf, CONF_zdownloaddir);
 }
 
 void do_defaults(char *session, Conf *conf)

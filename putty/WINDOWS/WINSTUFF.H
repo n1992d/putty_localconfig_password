@@ -239,6 +239,8 @@ GLOBAL void *logctx;
 			       "All Files (*.*)\0*\0\0\0")
 #define FILTER_DYNLIB_FILES ("Dynamic Library Files (*.dll)\0*.dll\0" \
 				 "All Files (*.*)\0*\0\0\0")
+#define FILTER_EXE_FILES ("Executable Files (*.exe)\0*.EXE\0" \
+			       "All Files (*.*)\0*\0\0\0")
 
 /*
  * winnet.c dynamically loads WinSock 2 or WinSock 1 depending on

@@ -2456,4 +2456,29 @@ void setup_config_box(struct controlbox *b, int midsession,
 			  sshbug_handler, I(CONF_sshbug_maxpkt2));
 	}
     }
+
+	// z-modem panel
+    ctrl_settitle(b, "Connection/ZModem",
+		      "Options controlling Z Modem transfers");
+
+    s = ctrl_getset(b, "Connection/ZModem", "receive",
+			"Receive command");
+
+    ctrl_editbox(s, "Command:", NO_SHORTCUT,100, HELPCTX(zmodem_rzcommand), conf_editbox_handler, I(CONF_rzcommand),I(1));
+
+    ctrl_editbox(s, "Options", NO_SHORTCUT, 50,  HELPCTX(zmodem_rzoptions), conf_editbox_handler, I(CONF_rzoptions),I(1));
+
+
+    s = ctrl_getset(b, "Connection/ZModem", "send",
+			"Send command");
+
+	ctrl_editbox(s, "Command:", NO_SHORTCUT,100, HELPCTX(zmodem_szcommand),conf_editbox_handler, I(CONF_szcommand),I(1));
+
+    ctrl_editbox(s, "Options", NO_SHORTCUT, 50,HELPCTX(zmodem_szoptions), conf_editbox_handler, I(CONF_szoptions),I(1));
+
+
+   s = ctrl_getset(b, "Connection/ZModem", "download","Download folder");
+
+    ctrl_editbox(s, "Location:", NO_SHORTCUT,100,HELPCTX(zmodem_zdownloaddir), conf_editbox_handler, I(CONF_zdownloaddir),I(1));
+
 }

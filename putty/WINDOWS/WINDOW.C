@@ -20,6 +20,11 @@
 #include "storage.h"
 #include "win_res.h"
 
+int xyz_Process(Backend *back, void *backhandle, Terminal *term);
+void xyz_ReceiveInit(Terminal *term);
+void xyz_StartSending(Terminal *term);
+void xyz_Cancel(Terminal *term);
+
 #ifndef NO_MULTIMON
 #include <multimon.h>
 #endif
@@ -48,6 +53,10 @@
 #define IDM_FULLSCREEN	0x0180
 #define IDM_PASTE     0x0190
 #define IDM_SPECIALSEP 0x0200
+
+#define IDM_XYZSTART  0x0200
+#define IDM_XYZUPLOAD 0x0210
+#define IDM_XYZABORT  0x0220
 
 #define IDM_SPECIAL_MIN 0x0400
 #define IDM_SPECIAL_MAX 0x0800
@@ -91,6 +100,7 @@ static void update_savedsess_menu(void);
 static void init_flashwindow(void);
 
 static int is_full_screen(void);
+void xyz_updateMenuItems(Terminal *term);
 static void make_full_screen(void);
 static void clear_full_screen(void);
 static void flip_full_screen(void);
@@ -820,6 +830,10 @@ int WINAPI WinMain(HINSTANCE inst, HINSTANCE prev, LPSTR cmdline, int show)
 	    AppendMenu(m, (conf_get_int(conf, CONF_resize_action)
 			   == RESIZE_DISABLED) ? MF_GRAYED : MF_ENABLED,
 		       IDM_FULLSCREEN, "&Full Screen");
+	    AppendMenu(m, MF_SEPARATOR, 0, 0);
+	    AppendMenu(m, term->xyz_transfering?MF_GRAYED:MF_ENABLED, IDM_XYZSTART, "&Zmodem Receive");
+	    AppendMenu(m, term->xyz_transfering?MF_GRAYED:MF_ENABLED, IDM_XYZUPLOAD, "Zmodem &Upload");
+	    AppendMenu(m, !term->xyz_transfering?MF_GRAYED:MF_ENABLED, IDM_XYZABORT, "Zmodem &Abort");
 	    AppendMenu(m, MF_SEPARATOR, 0, 0);
 	    if (has_help())
 		AppendMenu(m, MF_ENABLED, IDM_HELP, "&Help");
@@ -2413,6 +2427,18 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT message,
 	  case IDM_FULLSCREEN:
 	    flip_full_screen();
 	    break;
+	case IDM_XYZSTART:
+		xyz_ReceiveInit(term);
+		xyz_updateMenuItems(term);
+		break;
+	case IDM_XYZUPLOAD:
+		xyz_StartSending(term);
+		xyz_updateMenuItems(term);
+		break;
+	case IDM_XYZABORT:
+		xyz_Cancel(term);
+		xyz_updateMenuItems(term);
+		break;
 	  default:
 	    if (wParam >= IDM_SAVED_MIN && wParam < IDM_SAVED_MAX) {
 		SendMessage(hwnd, WM_SYSCOMMAND, IDM_SAVEDSESS, wParam);
@@ -5804,4 +5830,13 @@ void agent_schedule_callback(void (*callback)(void *, void *, int),
     c->data = data;
     c->len = len;
     PostMessage(hwnd, WM_AGENT_CALLBACK, 0, (LPARAM)c);
+}
+
+void xyz_updateMenuItems(Terminal *term)
+{
+	HMENU m = GetSystemMenu(hwnd, FALSE);
+	EnableMenuItem(m, IDM_XYZSTART, term->xyz_transfering?MF_GRAYED:MF_ENABLED);
+	EnableMenuItem(m, IDM_XYZUPLOAD, term->xyz_transfering?MF_GRAYED:MF_ENABLED);
+	EnableMenuItem(m, IDM_XYZABORT, !term->xyz_transfering?MF_GRAYED:MF_ENABLED);
+
 }

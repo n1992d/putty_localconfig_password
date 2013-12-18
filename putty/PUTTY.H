@@ -674,6 +674,12 @@ void cleanup_exit(int);
     X(STR, NONE, proxy_username) \
     X(STR, NONE, proxy_password) \
     X(STR, NONE, proxy_telnet_command) \
+	/* z-modem conf */ \
+	X(STR, NONE, rzcommand) \
+	X(STR, NONE, rzoptions) \
+	X(STR, NONE, szcommand) \
+	X(STR, NONE, szoptions) \
+	X(STR, NONE, zdownloaddir) \
     /* SSH options */ \
     X(STR, NONE, remote_cmd) \
     X(STR, NONE, remote_cmd2) /* fallback if remote_cmd fails; never loaded or saved */ \
